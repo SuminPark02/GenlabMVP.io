@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenLAB_canvas</title>
+</head>
+<link rel="stylesheet" href="canvas.css">
+<body>
+  <div class="div">
+    <div class="title">GenLAB</div>
+    <div class="div-1">
+      <div class="div-2">
+        <div class="leftbar">
+          <div class="fileinfo">
+            <div class="fileinfo2">
+              <div class="infobutton">
+                <button class="button" data-el="button-1">
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/1c3fc796ed39af9cae54695e7817f40d716744625188f780f38804e01a13df7c?apiKey=7d6ee18a140e4ab3bedf6ffe85c2059c&"
+                    class="img"
+                    alt="Clickable Image"
+                  />
+                </button>
+              </div>
+              <div class="fileinfotext">File Information</div>
+            </div>  
+          </div>
+          <div class="example">
+            <div class="example2">
+              <div class="examplebutton">
+                <button class="button" data-el="button-1">
+                  <img
+                    loading="lazy"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/1c3fc796ed39af9cae54695e7817f40d716744625188f780f38804e01a13df7c?apiKey=7d6ee18a140e4ab3bedf6ffe85c2059c&"
+                    class="img"
+                    alt="Clickable Image"
+                  />
+                </button>
+              </div>
+              <div class="exampletext"># of example</div>
+            </div>  
+          </div>
+          <div class="generate">
+
+          </div>
+        </div>
+        <div class="canvas">
+          <div class="files" id="fileDropArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
+            <p>Click or Drop<br/>Your File</p>
+          </div>
+        </div>
+
+        <div class="rightbar">
+          <div class="slc_contry">
+            <div class="slc_country2">
+              <div class="slcbutton">
+                <button class="button" data-el="button-1">
+                <img
+                  loading="lazy"
+                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/1c3fc796ed39af9cae54695e7817f40d716744625188f780f38804e01a13df7c?apiKey=7d6ee18a140e4ab3bedf6ffe85c2059c&"
+                  class="img"
+                />
+                </button>
+                <button class="button" data-el="button-3"></button>
+              </div>
+              <div class="slc_country_text">Select Country</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="underbar">
+      <button class="before" data-el="button-4"><div _text=""></div></button>
+      <button class="after" data-el="button-5"><div _text=""></div></button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const state = {};
+  
+      let context = null;
+      let nodesToDestroy = [];
+      let pendingUpdate = false;
+  
+      function destroyAnyNodes() {
+        // destroy current view template refs before rendering again
+        nodesToDestroy.forEach((el) => el.remove());
+        nodesToDestroy = [];
+      }
+  
+      // Function to update data bindings and loops
+      // call update() when you mutate state and need the updates to reflect
+      // in the dom
+      function update() {
+        if (pendingUpdate === true) {
+          return;
+        }
+        pendingUpdate = true;
+  
+        document.querySelectorAll("[data-el='button-1']").forEach((el) => {
+          el.setAttribute("openLinkInNewTab", false);
+        });
+  
+        document.querySelectorAll("[data-el='change-file']").forEach((el) => {
+          el.setAttribute("openLinkInNewTab", false);
+        });
+  
+        document.querySelectorAll("[data-el='button-2']").forEach((el) => {
+          el.setAttribute("openLinkInNewTab", false);
+        });
+  
+        document.querySelectorAll("[data-el='button-3']").forEach((el) => {
+          el.setAttribute("openLinkInNewTab", false);
+        });
+  
+        document.querySelectorAll("[data-el='button-4']").forEach((el) => {
+          el.setAttribute("openLinkInNewTab", false);
+        });
+  
+        document.querySelectorAll("[data-el='button-5']").forEach((el) => {
+          el.setAttribute("openLinkInNewTab", false);
+        });
+  
+        destroyAnyNodes();
+  
+        pendingUpdate = false;
+      }
+  
+      // Update with initial state on first load
+      update();
+    })();
+
+
+
+    function handleDrop(event) {
+      event.preventDefault();
+
+      var files = event.dataTransfer.files;
+
+      // Handle the dropped files (e.g., upload or process them)
+      // You can add your file handling logic here
+    }
+
+
+    function handleDragOver(event) {
+      event.preventDefault();
+    }
+    
+  </script>
+  
+</body>
+</html>
