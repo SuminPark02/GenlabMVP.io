@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GenLAB_beginning</title>
-  <script src="file.js" type="module"></script>
+  <title>GenLAB_download</title>
+  <script src="navigation.js"></script>
+
 
 </head>
 <body>
-  <link rel="stylesheet" href="beginning.css">
+  <link rel="stylesheet" href="fin.css">
 
   <div class="div">
     <div class="title">GenLAB</div>
@@ -28,52 +29,38 @@
                     />
                   </button>
                 </div>
-                <div class="fileinfotext">File Information</div>
-
-              <div class = "filename"><p id ='fileDetails'></p></div>
+                <div class="fileinfotext">File Information
+                <div class = "filename"><p id ='fileDetails'></p></div></div>
             </div>
           </div>
           </div>
 
           <div class="button_left">
-            <button _newProperty="" class="change_file" data-el="change-file">
-              Change File
-            </button>
-            <button class="delete_file " data-el="button-2">Delete File</button>
+
+            <button class="delete_file " data-el="button-2">Download</button>
           </div>
         </div>
         <div class="canvas">
           <div class="files" id="fileDropArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" onclick="openFileExplorer()">
-            <p>Click or Drop<br />Your File</p>
           </div>
         </div>
 
         <div class="rightbar">
-          <div class="slc_contry">
-            <div class="slc_country2">
-              <div class="slcbutton">
-                <button class="button" data-el="button-1">
-                <img
-                  loading="lazy"
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/1c3fc796ed39af9cae54695e7817f40d716744625188f780f38804e01a13df7c?apiKey=7d6ee18a140e4ab3bedf6ffe85c2059c&"
-                  class="img"
-                />
-                </button>
-                <button class="button" data-el="button-3"></button>
-              </div>
-              <div class="slc_country_text">Select Country</div>
-            </div>
-          </div>
+
+
         </div>
       </div>
     </div>
     <div class="underbar">
-      <button class="before" data-el="button-4"><div _text=""></div></button>
-      <button class="after" data-el="button-5"><div _text=""></div></button>
+      <button class="before" data-el="button-4" onclick="navigateToSound()"></button>
+      <button class="after" data-el="button-5" id="myButton"><div _text=""></div></button>
     </div>
   </div>
 
   <script>
+    function navigateToSound() {
+        window.location.href = "sound.html";
+      }
     /*(() => {
       const state = {};
   
