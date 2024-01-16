@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Masking</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        #canvasContainer {
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 600px;
+            height: 600px; /* 조절 가능한 높이 */
+        }
+
+    </style>
+</head>
+<body>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id = "canvasContainer">
+        <canvas id="imageCanvas">
+        </canvas>
+    </div>
+    <label for="brushSize">Brush Size:</label>
+    <input type="range" id="brushSize" min="1" max="50" value="10">
+    <button id="toggleBrush">Toggle Brush</button>
+    <button id="saveOriginalImage">Save Original Image</button>
+    <button id="saveMaskedImage">Save Masked Image</button>
+    <button id="undo">Undo</button>
+    <button id="redo">Redo</button>
+
+    <script>
+        document.getElementById('imageInput').addEventListener('change', handleImage, false);
+        var isBrushOn = false;
+        var originalImage;
+        var maskedCoordinates = []; // 추가: 마스킹된 좌표를 저장할 배열
+        var currentIndex = -1;
+
+        function handleImage(e) {
+            var canvas = document.getElementById('imageCanvas');
+            var ctx = canvas.getContext('2d');
+            var img = new Image();
+            img.onload = function () {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0, img.width, img.height);
+
+                // Enable drawing on the canvas
+                originalImage = new Image();
+                originalImage.src = canvas.toDataURL();
+                enableDrawing(canvas, ctx);
+                
+                /*originalImage(canvas);*/
+            };
+            img.src = URL.createObjectURL(e.target.files[0]);
+        }
+
+        function enableDrawing(canvas, ctx) {
+            var isDrawing = false;
+            var brushSizeInput = document.getElementById('brushSize');
+            var toggleBrushButton = document.getElementById('toggleBrush');
+            var saveOriginalImageButton = document.getElementById('saveOriginalImage');
+            var saveMaskedImageButton = document.getElementById('saveMaskedImage');
+            var undoButton = document.getElementById('undo');
+            var redoButton = document.getElementById('redo');
+
+
+            toggleBrushButton.addEventListener('click', function () {
+                isBrushOn = !isBrushOn;
+                toggleBrushButton.textContent = isBrushOn ? 'Turn Off Brush' : 'Turn On Brush';
+            });
+
+            canvas.addEventListener('mousedown', function (e) {
+                isDrawing = true;
+                draw(e.offsetX, e.offsetY, ctx, true);
+            });
+
+            canvas.addEventListener('mousemove', function (e) {
+                if (isDrawing && isBrushOn) {
+                    draw(e.offsetX, e.offsetY, ctx, false);
+                }
+            });
+
+            canvas.addEventListener('mouseup', function () {
+                isDrawing = false;
+                ctx.beginPath();
+            });
+
+            canvas.addEventListener('mouseout', function () {
+                isDrawing = false;
+            });
+
+            brushSizeInput.addEventListener('input', function () {
+                ctx.lineWidth = brushSizeInput.value;
+            });
+
+            saveOriginalImageButton.addEventListener('click', function () {
+                saveOriginalImage(canvas, maskedCoordinates);
+            });
+
+            saveMaskedImageButton.addEventListener('click', function () {
+                saveMaskedImage(canvas, maskedCoordinates);
+
+            });
+
+            undoButton.addEventListener('click', function () {
+                undo(canvas, ctx);
+            });
+
+            redoButton.addEventListener('click', function () {
+                redo(canvas, ctx);
+            });
+       
+       
+       
+       
+        }
+
+        function draw(x, y, ctx, isMouseDown) {
+            /*var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+
+            if (isMouseDown) {
+                ctx.beginPath();
+            }
+
+            ctx.arc(x, y, ctx.lineWidth / 2, 0, 2 * Math.PI);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.stroke();
+
+            // 추가: 마스킹된 좌표 저장
+            maskedCoordinates.push({ x: x, y: y });*/
+            if (isMouseDown) {
+                ctx.beginPath();
+            }
+
+            ctx.arc(x, y, ctx.lineWidth / 2, 0, 2 * Math.PI);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.stroke();
+
+            // 추가: 마스킹된 좌표 저장
+            maskedCoordinates.push({ x: x, y: y });
+                }
+
+
+        function saveOriginalImage(canvas, coordinates) {
+            if (coordinates.length === 0 || !originalImage) {
+                alert('No masked area to save.');
+                return;
+            }
+
+            var minX = canvas.width;
+            var minY = canvas.height;
+            var maxX = 0;
+            var maxY = 0;
+
+            // 마스킹된 좌표 중 최소 및 최대 좌표 계산
+            coordinates.forEach(function (coord) {
+                minX = Math.min(minX, coord.x);
+                minY = Math.min(minY, coord.y);
+                maxX = Math.max(maxX, coord.x);
+                maxY = Math.max(maxY, coord.y);
+            });
+
+            // 새로운 Canvas에 이미지 데이터를 그리기
+            var newCanvas = document.createElement('canvas');
+            newCanvas.width = maxX - minX;
+            newCanvas.height = maxY - minY;
+            var newCtx = newCanvas.getContext('2d');
+
+            // 저장된 원본 이미지에서 마스킹된 영역만 추출하여 그리기
+            newCtx.drawImage(originalImage, minX, minY, maxX - minX, maxY - minY, 0, 0, maxX - minX, maxY - minY);
+
+            // 이미지 저장 (예: 브라우저에서 다운로드)
+            var link = document.createElement('a');
+            link.href = newCanvas.toDataURL();
+            link.download = 'original_image.png';
+            link.click();
+        }
+
+
+
+        function saveMaskedImage(canvas, coordinates) {
+            if (coordinates.length === 0) {
+                alert('No masked area to save.');
+                return;
+            }
+
+            var minX = canvas.width;
+            var minY = canvas.height;
+            var maxX = 0;
+            var maxY = 0;
+
+            // 마스킹된 좌표 중 최소 및 최대 좌표 계산
+            coordinates.forEach(function (coord) {
+                minX = Math.min(minX, coord.x);
+                minY = Math.min(minY, coord.y);
+                maxX = Math.max(maxX, coord.x);
+                maxY = Math.max(maxY, coord.y);
+            });
+
+            // 새로운 Canvas에 이미지 데이터를 그리기
+            var newCanvas = document.createElement('canvas');
+            newCanvas.width = maxX - minX;
+            newCanvas.height = maxY - minY;
+            var newCtx = newCanvas.getContext('2d');
+
+            // 원본 이미지에서 마스킹된 영역을 추출하여 흰색으로 설정
+            newCtx.drawImage(canvas, minX, minY, maxX - minX, maxY - minY, 0, 0, maxX - minX, maxY - minY);
+            var imageData = newCtx.getImageData(0, 0, maxX - minX, maxY - minY);
+            for (var i = 0; i < imageData.data.length; i += 4) {
+                var red = imageData.data[i];
+                var green = imageData.data[i + 1];
+                var blue = imageData.data[i + 2];
+                var alpha = imageData.data[i + 3];
+                if (red === 0 && green === 0 && blue === 0) {
+                } else {
+                    imageData.data[i] = 255;
+                    imageData.data[i + 1] = 255;
+                    imageData.data[i + 2] = 255;
+                }
+                
+
+            }
+            newCtx.putImageData(imageData, 0, 0);
+
+            // 이미지 저장 (예: 브라우저에서 다운로드)
+            var link = document.createElement('a');
+            link.href = newCanvas.toDataURL();
+            link.download = 'masked_image.png';
+            link.click();
+        }
+
+        function startDrawing(e, canvas, ctx) {
+            ctx.beginPath();
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            ctx.moveTo(x, y);
+            drawingActions.push({ type: 'start', x: x, y: y });
+            currentIndex = drawingActions.length - 1;
+        }
+
+        function continueDrawing(e, canvas, ctx) {
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            drawingActions.push({ type: 'draw', x: x, y: y });
+            currentIndex = drawingActions.length - 1;
+        }
+        function saveState(canvas) {
+            var img = new Image();
+            img.src = canvas.toDataURL();
+            drawingActions.push({ type: 'image', data: img.src });
+            currentIndex = drawingActions.length - 1;
+        }
+
+        function undo(canvas, ctx) {
+            if (currentIndex > 0) {
+                currentIndex--;
+                redraw(canvas, ctx);
+            }
+        }
+
+        function redo(canvas, ctx) {
+            if (currentIndex < drawingActions.length - 1) {
+                currentIndex++;
+                redraw(canvas, ctx);
+            }
+        }
+
+        function redraw(canvas, ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (var i = 0; i <= currentIndex; i++) {
+                var action = drawingActions[i];
+                if (action.type === 'start') {
+                    ctx.beginPath();
+                    ctx.moveTo(action.x, action.y);
+                } else if (action.type === 'draw') {
+                    ctx.lineTo(action.x, action.y);
+                    ctx.stroke();
+                } else if (action.type === 'image') {
+                    var img = new Image();
+                    img.src = action.data;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

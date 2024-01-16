@@ -69,8 +69,9 @@
             </div>
           </div>
         </div>
-        <div class="canvas">
-          <div class="files">
+        <div id = "canvasContainer">
+          <div class="canvas">
+              <canvas id="imageCanvas"></canvas>
           </div>
         </div>
 
@@ -152,6 +153,48 @@
     function navigateToTrans() {
         window.location.href = "trans.html";
       }
+    // URL에서 쿼리 매개변수를 가져오는 함수
+    function getQueryVariable(variable) {
+      var query = window.location.search.substring(1);
+      var vars = query.split("&");
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+          return decodeURIComponent(pair[1]);
+        }
+      }
+      return null;
+    }
+
+    // 페이지 로드 시 실행되는 함수
+    window.onload = function() {
+      // 파일 이름을 가져오기
+      var filename = getQueryVariable("filename");
+
+      // canvas 요소와 컨테이너 요소 가져오기
+      var canvasContainer = document.getElementById("canvasContainer");
+      var imageCanvas = document.getElementById("imageCanvas");
+      var context = imageCanvas.getContext("2d");
+
+      // 가져온 파일 이름을 출력하거나 필요한 작업 수행
+      if (filename) {
+        console.log("File Name: " + filename);
+
+        // 이미지를 생성하고 canvas에 그리기
+        var img = new Image();
+        img.onload = function() {
+          // canvas 크기를 이미지 크기로 설정
+          imageCanvas.width = img.width;
+          imageCanvas.height = img.height;
+
+          // canvas에 이미지 그리기
+          context.drawImage(img, 0, 0);
+        };
+        img.src = filename; // 파일 경로를 이미지의 src로 설정
+      } else {
+        console.log("File Name not found in query parameters.");
+      }
+    };
 
 
 

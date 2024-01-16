@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>index</title>
   <script src="file.js" type="module"></script>
-  <script src="next.js" type="module"></script>
-  <script src="navigation.js"></script>
-
+  <script src="./cropperjs/dist/cropper.js"></script>
 
 </head>
 <body>
   <link rel="stylesheet" href="index.css">
+  <link  href="./cropperjs/dist/cropper.css" rel="stylesheet">
 
   <div class="div">
     <div class="title">GenLAB</div>
@@ -43,11 +42,12 @@
             <button class="delete_file " data-el="button-2">Delete File</button>
           </div>
         </div>
-        <div class="canvas">
-          <div class="files" id="fileDropArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" onclick="openFileExplorer()">
-            <p>Click or Drop<br />Your Image File</p>
+          <div id = "canvasContainer">
+            <div class="canvas">
+              <div class="files" id="fileDropArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" onclick="openFileExplorer()">
+                <p>Click or Drop<br />Your Image File</p>
+              </div>
           </div>
-  
           <div id="canvasContainer">
             <canvas id="canvasImage"></canvas>
           </div>
@@ -83,35 +83,20 @@
       </div>
     </div>
     <div class="underbar">
-      <button class="before" data-el="button-4"><div _text=""></div></button>
-      <button class="after" data-el="button-5" id="myButton"><div _text=""></div></button>
+      <button class="before" data-el="button-4"></button>
+      <button class="after" data-el="button-5" onclick="navigateToCanvas()"><div _text=""></div></button>
     </div>
   </div>
 
   <script>
-      // JavaScript 코드 추가
-  document.addEventListener('DOMContentLoaded', function () {
-    // 초기 상태는 off로 설정
-    let isToggleOn = false;
+    function navigateToCanvas() {
+        window.location.href = "canvas.html";
+       // 파일 업로드 input element에서 파일 가져오기
+        var selectedFile = fileInput.files[0];
 
-    // 토글 버튼을 클릭할 때마다 상태 변경
-    document.querySelector('.toggle-button').addEventListener('click', function () {
-      isToggleOn = !isToggleOn;
-      updateFilesizeVisibility();
-    });
-
-    // 파일 사이즈 표시 여부 업데이트하는 함수
-    function updateFilesizeVisibility() {
-      const filesizeElement = document.getElementById('filesize');
-
-      // isToggleOn 값에 따라 파일 사이즈 표시 여부 결정
-      if (isToggleOn) {
-        filesizeElement.style.display = 'block';
-      } else {
-        filesizeElement.style.display = 'none';
+       // canvas.html 페이지로 이동하면서 파일 정보를 쿼리 매개변수로 전달
+        window.location.href = "canvas.html?filename=" + encodeURIComponent(selectedFile.name);        
       }
-    }
-  });
 
 
 

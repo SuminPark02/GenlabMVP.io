@@ -167,50 +167,42 @@
   align-items: center;
 }
 
+#canvasContainer {
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 1500px;
+  height: 1000px; /* 조절 가능한 높이 */
+}
+
 .canvas {
-    display: flex;
-    flex-direction: column;
-    line-height: normal;
-    width: 51%;
-    margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  line-height: normal;
+  max-width: 100%;
+  height: auto;
+  margin-left: 20px;
+}
+
+@media (max-width: 991px) {
+  .canvas {
+    width: 100%;
+    height: 100%;
+    margin-left: 0;
   }
+}
+
   
-  @media (max-width: 991px) {
-    .canvas {
-      width: 100%;
-      margin-left: 0; /* Adjusted to remove the left margin on smaller screens */
-    }
-  }
-  
-  .files {
-    color: #000;
-    text-align: center;
+  .imageCanvas {
     max-width: 100%;
     border-radius: 20px;
-    background-color: #d9d9d9;
     flex-grow: 1;
-    justify-content: center;
     width: auto;
     align-self: stretch;
-    padding: 250px 60px;
     font: 700 40px Pretendard, sans-serif;
-    cursor: pointer; /* Add this line to make it look clickable */
   
-    /* Additional styling for better visual indication on hover */
-    transition: background-color 0.3s ease;
   }
   
-  .files:hover {
-    background-color: #c0c0c0; /* Change the background color on hover */
-  }
-  
-  @media (max-width: 991px) {
-    .files {
-      max-width: 100%;
-      margin-top: 40px;
-      padding: 40px 20px;
-    }
-  }
+
   
  /* =======================RIGHT BAR======================== */
  
